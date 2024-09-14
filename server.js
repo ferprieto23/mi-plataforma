@@ -1,8 +1,11 @@
 const express = require('express');
 const multer = require('multer');
-const XLSX = require('xlsx');
+const nodemailer = require('nodemailer');
 const fs = require('fs');
 const path = require('path');
+const { Client, MessageMedia } = require('whatsapp-web.js');
+const sessionFilePath = path.resolve(__dirname, 'session.json');
+const client = new Client({ session: require(sessionFilePath) });
 
 const app = express();
 const port = 3000;
@@ -18,73 +21,128 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
+// Configuración de nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // Puedes cambiar esto según el proveedor de correo
+    auth: {
+        user: 'tu-email@gmail.com', // Tu correo electrónico
+        pass: 'tu-contraseña' // Tu contraseña de correo electrónico
+    }
+});
+
 // Middleware para servir archivos estáticos
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Ruta para manejar el guardado en Excel
-app.post('/guardarExcel', upload.array('imagenTrabajo', 3), (req, res) => {
-    const { tipoTrabajo, subTipo, direccion, observaciones } = req.body;
+// Ruta para manejar el envío de intervención
+app.post('/enviarIntervencion', upload.array('imagenes', 3), (req, res) => {
+    const { tipoTrabajo, direccion } = req.body;
     const imagenes = req.files.map(file => file.filename);
 
-    if (!tipoTrabajo || !subTipo || !direccion) {
+    if (!tipoTrabajo || !direccion) {
         return res.json({ success: false, message: 'Faltan datos.' });
     }
 
-    // Crear o cargar el archivo Excel
-    const filePath = path.join(__dirname, 'relevamientos.xlsx');
-    let workbook;
-    
-    if (fs.existsSync(filePath)) {
-        workbook = XLSX.readFile(filePath);
-    } else {
-        workbook = XLSX.utils.book_new();
-    }
+    // Enviar a WhatsApp
+    imagenes.forEach(imagen => {
+        const media = MessageMedia.fromFilePath(path.join(__dirname, 'uploads', imagen));
+        client.sendMessage('+541136741002', media);
+    });
 
-    // Obtener la primera hoja
-    let worksheet = workbook.Sheets['Relevamientos'];
-    if (!worksheet) {
-        worksheet = XLSX.utils.aoa_to_sheet([
-            ['ID', 'Tipo de Trabajo', 'Sub Tipo', 'Dirección', 'Observaciones', 'Imagenes']
-        ]);
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Relevamientos');
-    }
+    // Enviar correo electrónico
+    const mailOptions = {
+        from: 'tu-email@gmail.com',
+        to: 'pablof.prieto@telefonica.com',
+        subject: 'Intervención Enviada',
+        text: `Tipo de Trabajo: ${tipoTrabajo}\nDirección: ${direccion}`,
+        attachments: imagenes.map(imagen => ({
+            filename: imagen,
+            path: path.join(__dirname, 'uploads', imagen)
+        }))
+    };
 
-    // Agregar nueva fila de datos
-    const rowCount = worksheet['!rows'] ? worksheet['!rows'].length : 1;
-    const newRow = [
-        `Relevamiento ${rowCount + 1}`,
-        tipoTrabajo,
-        subTipo,
-        direccion,
-        observaciones,
-        imagenes.join(', ')
-    ];
-
-    XLSX.utils.sheet_add_aoa(worksheet, [newRow], { origin: -1 });
-    XLSX.writeFile(workbook, filePath);
-
-    res.json({ success: true, relevamientoId: `Relevamiento ${rowCount + 1}`, imagenes });
-});
-
-// Ruta para manejar el envío por WhatsApp (solo muestra cómo recibir los datos, no envía realmente)
-app.post('/enviarWhatsApp', upload.array('imagenTrabajo', 3), (req, res) => {
-    const { tipoTrabajo, subTipo, latitud, longitud, direccion, observaciones } = req.body;
-    const imagenes = req.files.map(file => file.filename);
-
-    console.log({
-        tipoTrabajo,
-        subTipo,
-        latitud,
-        longitud,
-        direccion,
-        observaciones,
-        imagenes
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error enviando el correo:', error);
+            return res.status(500).json({ success: false, message: 'Error al enviar el correo.' });
+        }
+        console.log('Correo enviado:', info.response);
     });
 
     res.json({ success: true });
 });
+
+// Ruta para manejar el envío de reportes
+app.post('/enviarReporte', upload.array('imagenesReporte', 3), (req, res) => {
+    const { tipoReporte, comentarios } = req.body;
+    const imagenesReporte = req.files.map(file => file.filename);
+
+    if (!tipoReporte || !comentarios) {
+        return res.json({ success: false, message: 'Faltan datos.' });
+    }
+
+    // Enviar a WhatsApp
+    imagenesReporte.forEach(imagen => {
+        const media = MessageMedia.fromFilePath(path.join(__dirname, 'uploads', imagen));
+        client.sendMessage('+541136741002', media);
+    });
+
+    // Enviar correo electrónico
+    const mailOptions = {
+        from: 'tu-email@gmail.com',
+        to: 'pablof.prieto@telefonica.com',
+        subject: 'Reporte Enviado',
+        text: `Tipo de Reporte: ${tipoReporte}\nComentarios: ${comentarios}`,
+        attachments: imagenesReporte.map(imagen => ({
+            filename: imagen,
+            path: path.join(__dirname, 'uploads', imagen)
+        }))
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error enviando el correo:', error);
+            return res.status(500).json({ success: false, message: 'Error al enviar el correo.' });
+        }
+        console.log('Correo enviado:', info.response);
+    });
+
+    res.json({ success: true });
+});
+
+// Ruta para manejar el envío de materiales
+app.post('/enviarMateriales', (req, res) => {
+    const { tipoMaterial } = req.body;
+
+    if (!tipoMaterial) {
+        return res.json({ success: false, message: 'Faltan datos.' });
+    }
+
+    // Enviar a WhatsApp
+    client.sendMessage('+541136741002', `Pedido de Materiales: ${tipoMaterial}`);
+
+    // Enviar correo electrónico
+    const mailOptions = {
+        from: 'tu-email@gmail.com',
+        to: 'pablof.prieto@telefonica.com',
+        subject: 'Pedido de Materiales',
+        text: `Tipo de Material: ${tipoMaterial}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Error enviando el correo:', error);
+            return res.status(500).json({ success: false, message: 'Error al enviar el correo.' });
+        }
+        console.log('Correo enviado:', info.response);
+    });
+
+    res.json({ success: true });
+});
+
+// Inicializar cliente de WhatsApp
+client.initialize();
 
 app.listen(port, () => {
     console.log(`Servidor corriendo en http://localhost:${port}`);

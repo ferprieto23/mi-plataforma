@@ -4,278 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plataforma de Trabajo - Movistar</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-
-        header {
-            background-color: #004c97;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-
-        header img {
-            max-width: 150px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 800px;
-            margin: 20px auto;
-            background: white;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h1 {
-            color: #004c97;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        button {
-            width: 100%;
-            padding: 15px;
-            margin: 10px 0;
-            font-size: 18px;
-            color: white;
-            background-color: #004c97;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #003870;
-        }
-
-        .hidden {
-            display: none;
-        }
-
-        label, select, input, textarea {
-            width: 100%;
-            margin: 10px 0;
-            padding: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
-        }
-
-        select, input[type="file"], textarea {
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="submit"] {
-            background-color: #004c97;
-            color: white;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #003870;
-        }
-
-        textarea {
-            height: 100px;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <header>
+        <img src="movistar.jpg" alt="Logo Movistar">
+    </header>
 
-<header>
-    <img src="movistar.jpg" alt="Logo Movistar">
-</header>
+    <div class="container">
+        <h1>Selecciona una acción</h1>
 
-<div class="container">
-    <h1>Selecciona una acción</h1>
+        <button id="intervenirBtn">Intervenir</button>
+        <button id="reportarBtn">Reportar</button>
+        <button id="materialesBtn">Materiales</button>
 
-    <button id="intervenirBtn">Intervenir</button>
-    <button id="reportarBtn">Reportar</button>
-    <button id="materialesBtn">Materiales</button>
-
-    <!-- Intervenir -->
-    <div id="intervenirForm" class="hidden">
-        <h2>Intervención</h2>
-        <label for="tipoTrabajo">Selecciona tipo de trabajo:</label>
-        <select id="tipoTrabajo">
-            <option value="">--Selecciona--</option>
-            <option value="preventivo">Trabajo Preventivo</option>
-            <option value="desmonte">Desmonte</option>
-        </select>
-
-        <div id="preventivoOptions" class="hidden">
-            <label for="preventivoTipo">Tipo de Preventivo:</label>
-            <select id="preventivoTipo">
-                <option value="CTO">Cierre de CTO abierta</option>
-                <option value="reacondicionamientoCTO">Reacondicionamiento de CTO</option>
-                <option value="reacondicionamientoBalona">Reacondicionamiento de Balona</option>
+        <!-- Intervenir -->
+        <div id="intervenirForm" class="hidden">
+            <h2>Intervención</h2>
+            <label for="tipoTrabajo">Selecciona tipo de trabajo:</label>
+            <select id="tipoTrabajo">
+                <option value="">--Selecciona--</option>
+                <option value="preventivo">Trabajo Preventivo</option>
+                <option value="desmonte">Desmonte</option>
             </select>
+
+            <div id="preventivoOptions" class="hidden">
+                <label for="preventivoTipo">Tipo de Preventivo:</label>
+                <select id="preventivoTipo">
+                    <option value="CTO">Cierre de CTO abierta</option>
+                    <option value="reacondicionamientoCTO">Reacondicionamiento de CTO</option>
+                    <option value="reacondicionamientoBalona">Reacondicionamiento de Balona</option>
+                </select>
+            </div>
+
+            <div id="desmonteOptions" class="hidden">
+                <label for="desmonteTipo">Tipo de Desmonte:</label>
+                <select id="desmonteTipo">
+                    <option value="cajaCobre">Caja de Cobre</option>
+                    <option value="cable">Cable</option>
+                </select>
+                <textarea id="observaciones" placeholder="Observaciones..."></textarea>
+            </div>
+
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" placeholder="Ingresa la dirección">
+
+            <label for="imagenes">Subir imágenes (hasta 3):</label>
+            <input type="file" id="imagenes" multiple accept="image/*">
+
+            <input type="submit" id="enviarIntervencion" value="Trabajo finalizado">
         </div>
 
-        <div id="desmonteOptions" class="hidden">
-            <label for="desmonteTipo">Tipo de Desmonte:</label>
-            <select id="desmonteTipo">
-                <option value="cajaCobre">Caja de Cobre</option>
-                <option value="cable">Cable</option>
+        <!-- Reportar -->
+        <div id="reportarForm" class="hidden">
+            <h2>Reporte</h2>
+            <label for="tipoReporte">Selecciona tipo de reporte:</label>
+            <select id="tipoReporte">
+                <option value="CTOabierta">CTO Abierta</option>
+                <option value="CTOrota">CTO Rota</option>
+                <option value="balonaCaida">Balona Caída</option>
+                <option value="cableTirado">Cable Tirado</option>
+                <option value="bajadasMuertas">Bajadas Muertas</option>
+                <option value="otros">Otros</option>
             </select>
-            <textarea id="observaciones" placeholder="Observaciones..."></textarea>
+
+            <textarea id="comentariosReporte" placeholder="Comentarios y observaciones..."></textarea>
+
+            <label for="imagenesReporte">Subir imágenes (hasta 3):</label>
+            <input type="file" id="imagenesReporte" multiple accept="image/*">
+
+            <input type="submit" id="enviarReporte" value="Enviar Reporte">
         </div>
 
-        <label for="direccion">Dirección:</label>
-        <input type="text" id="direccion" placeholder="Ingresa la dirección">
+        <!-- Materiales -->
+        <div id="materialesForm" class="hidden">
+            <h2>Pedido de Materiales</h2>
+            <label for="materialTipo">Selecciona tipo de material:</label>
+            <select id="materialTipo">
+                <option value="herramientas">Herramientas</option>
+                <option value="precintos">Precintos</option>
+                <option value="cinta">Cinta</option>
+                <option value="otros">Otros</option>
+            </select>
 
-        <label for="imagenes">Subir imágenes (hasta 3):</label>
-        <input type="file" id="imagenes" multiple accept="image/*">
-
-        <input type="submit" id="enviarIntervencion" value="Trabajo finalizado">
+            <input type="submit" id="enviarMateriales" value="Enviar Pedido de Materiales">
+        </div>
     </div>
 
-    <!-- Reportar -->
-    <div id="reportarForm" class="hidden">
-        <h2>Reporte</h2>
-        <label for="tipoReporte">Selecciona tipo de reporte:</label>
-        <select id="tipoReporte">
-            <option value="CTOabierta">CTO Abierta</option>
-            <option value="CTOrota">CTO Rota</option>
-            <option value="balonaCaida">Balona Caída</option>
-            <option value="cableTirado">Cable Tirado</option>
-            <option value="bajadasMuertas">Bajadas Muertas</option>
-            <option value="otros">Otros</option>
-        </select>
-
-        <textarea id="comentariosReporte" placeholder="Comentarios y observaciones..."></textarea>
-
-        <label for="imagenesReporte">Subir imágenes (hasta 3):</label>
-        <input type="file" id="imagenesReporte" multiple accept="image/*">
-
-        <input type="submit" id="enviarReporte" value="Enviar Reporte">
-    </div>
-
-    <!-- Materiales -->
-    <div id="materialesForm" class="hidden">
-        <h2>Pedido de Materiales</h2>
-        <label for="materialTipo">Selecciona tipo de material:</label>
-        <select id="materialTipo">
-            <option value="herramientas">Herramientas</option>
-            <option value="precintos">Precintos</option>
-            <option value="cinta">Cinta</option>
-            <option value="otros">Otros</option>
-        </select>
-
-        <input type="submit" id="enviarMateriales" value="Enviar Pedido de Materiales">
-    </div>
-</div>
-
-<script>
-    // Mostrar formularios dependiendo de la acción seleccionada
-    const intervenirBtn = document.getElementById('intervenirBtn');
-    const reportarBtn = document.getElementById('reportarBtn');
-    const materialesBtn = document.getElementById('materialesBtn');
-
-    const intervenirForm = document.getElementById('intervenirForm');
-    const reportarForm = document.getElementById('reportarForm');
-    const materialesForm = document.getElementById('materialesForm');
-
-    intervenirBtn.addEventListener('click', function () {
-        intervenirForm.classList.remove('hidden');
-        reportarForm.classList.add('hidden');
-        materialesForm.classList.add('hidden');
-    });
-
-    reportarBtn.addEventListener('click', function () {
-        reportarForm.classList.remove('hidden');
-        intervenirForm.classList.add('hidden');
-        materialesForm.classList.add('hidden');
-    });
-
-    materialesBtn.addEventListener('click', function () {
-        materialesForm.classList.remove('hidden');
-        intervenirForm.classList.add('hidden');
-        reportarForm.classList.add('hidden');
-    });
-
-    // Mostrar opciones específicas según tipo de trabajo
-    const tipoTrabajo = document.getElementById('tipoTrabajo');
-    const preventivoOptions = document.getElementById('preventivoOptions');
-    const desmonteOptions = document.getElementById('desmonteOptions');
-
-    tipoTrabajo.addEventListener('change', function () {
-        if (this.value === 'preventivo') {
-            preventivoOptions.classList.remove('hidden');
-            desmonteOptions.classList.add('hidden');
-        } else if (this.value === 'desmonte') {
-            desmonteOptions.classList.remove('hidden');
-            preventivoOptions.classList.add('hidden');
-        }
-    });
-
-    // Funciones para enviar los datos
-    document.getElementById('enviarIntervencion').addEventListener('click', function () {
-        const tipo = tipoTrabajo.value;
-        const direccion = document.getElementById('direccion').value;
-        const imagenes = document.getElementById('imagenes').files;
-
-        const formData = new FormData();
-        formData.append('tipoTrabajo', tipo);
-        formData.append('direccion', direccion);
-        for (let i = 0; i < imagenes.length; i++) {
-            formData.append('imagenes[]', imagenes[i]);
-        }
-
-        fetch('/enviarIntervencion', {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            alert('Intervención enviada');
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    });
-
-    document.getElementById('enviarReporte').addEventListener('click', function () {
-        const tipoReporte = document.getElementById('tipoReporte').value;
-        const comentarios = document.getElementById('comentariosReporte').value;
-        const imagenesReporte = document.getElementById('imagenesReporte').files;
-
-        const formData = new FormData();
-        formData.append('tipoReporte', tipoReporte);
-        formData.append('comentarios', comentarios);
-        for (let i = 0; i < imagenesReporte.length; i++) {
-            formData.append('imagenes[]', imagenesReporte[i]);
-        }
-
-        fetch('/enviarReporte', {
-            method: 'POST',
-            body: formData
-        }).then(response => {
-            alert('Reporte enviado');
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    });
-
-    document.getElementById('enviarMateriales').addEventListener('click', function () {
-        const tipoMaterial = document.getElementById('materialTipo').value;
-
-        fetch('/enviarMateriales', {
-            method: 'POST',
-            body: JSON.stringify({ tipoMaterial }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => {
-            alert('Pedido de materiales enviado');
-        }).catch(error => {
-            console.error('Error:', error);
-        });
-    });
-</script>
-
+    <script src="scripts.js"></script>
 </body>
 </html>
