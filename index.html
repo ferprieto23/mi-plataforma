@@ -3,94 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plataforma de Trabajo - Movistar</title>
+    <title>Gestión de Trabajos</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
-        <img src="movistar.jpg" alt="Logo Movistar">
+        <img src="movistar.jpg" alt="Movistar" class="banner">
+        <h1>Gestión de Trabajos</h1>
     </header>
 
-    <div class="container">
-        <h1>Selecciona una acción</h1>
-
-        <button id="intervenirBtn">Intervenir</button>
-        <button id="reportarBtn">Reportar</button>
-        <button id="materialesBtn">Materiales</button>
-
-        <!-- Intervenir -->
-        <div id="intervenirForm" class="hidden">
-            <h2>Intervención</h2>
-            <label for="tipoTrabajo">Selecciona tipo de trabajo:</label>
-            <select id="tipoTrabajo">
-                <option value="">--Selecciona--</option>
-                <option value="preventivo">Trabajo Preventivo</option>
-                <option value="desmonte">Desmonte</option>
-            </select>
-
-            <div id="preventivoOptions" class="hidden">
-                <label for="preventivoTipo">Tipo de Preventivo:</label>
-                <select id="preventivoTipo">
-                    <option value="CTO">Cierre de CTO abierta</option>
-                    <option value="reacondicionamientoCTO">Reacondicionamiento de CTO</option>
-                    <option value="reacondicionamientoBalona">Reacondicionamiento de Balona</option>
-                </select>
-            </div>
-
-            <div id="desmonteOptions" class="hidden">
-                <label for="desmonteTipo">Tipo de Desmonte:</label>
-                <select id="desmonteTipo">
-                    <option value="cajaCobre">Caja de Cobre</option>
-                    <option value="cable">Cable</option>
-                </select>
-                <textarea id="observaciones" placeholder="Observaciones..."></textarea>
-            </div>
-
-            <label for="direccion">Dirección:</label>
-            <input type="text" id="direccion" placeholder="Ingresa la dirección">
-
-            <label for="imagenes">Subir imágenes (hasta 3):</label>
-            <input type="file" id="imagenes" multiple accept="image/*">
-
-            <input type="submit" id="enviarIntervencion" value="Trabajo finalizado">
+    <main>
+        <div class="menu">
+            <button class="btn" id="btnPreventivo" onclick="showOptions('preventivo')">Preventivo</button>
+            <button class="btn" id="btnDesmonte" onclick="showOptions('desmonte')">Desmonte</button>
+            <button class="btn" id="btnMateriales" onclick="showOptions('materiales')">Materiales</button>
         </div>
 
-        <!-- Reportar -->
-        <div id="reportarForm" class="hidden">
-            <h2>Reporte</h2>
-            <label for="tipoReporte">Selecciona tipo de reporte:</label>
-            <select id="tipoReporte">
-                <option value="CTOabierta">CTO Abierta</option>
-                <option value="CTOrota">CTO Rota</option>
-                <option value="balonaCaida">Balona Caída</option>
-                <option value="cableTirado">Cable Tirado</option>
-                <option value="bajadasMuertas">Bajadas Muertas</option>
-                <option value="otros">Otros</option>
-            </select>
+        <div id="formContainer" class="form-container">
+            <form id="jobForm" action="upload.php" method="POST" enctype="multipart/form-data">
+                <div id="subOptions" class="hidden">
+                    <!-- Aquí se mostrarán las opciones específicas según el tipo de trabajo -->
+                </div>
 
-            <textarea id="comentariosReporte" placeholder="Comentarios y observaciones..."></textarea>
+                <div id="imageUpload" class="hidden">
+                    <label for="image">Subir imagen del trabajo terminado:</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
 
-            <label for="imagenesReporte">Subir imágenes (hasta 3):</label>
-            <input type="file" id="imagenesReporte" multiple accept="image/*">
+                <div id="gpsLocation" class="hidden">
+                    <label>Ubicación GPS:</label>
+                    <input type="text" id="latitude" name="latitude" readonly>
+                    <input type="text" id="longitude" name="longitude" readonly>
+                    <button type="button" onclick="getLocation()">Obtener ubicación</button>
+                </div>
 
-            <input type="submit" id="enviarReporte" value="Enviar Reporte">
+                <div class="buttons">
+                    <button type="submit" id="submitBtn" class="submit-btn hidden">Enviar</button>
+                </div>
+            </form>
         </div>
+    </main>
 
-        <!-- Materiales -->
-        <div id="materialesForm" class="hidden">
-            <h2>Pedido de Materiales</h2>
-            <label for="materialTipo">Selecciona tipo de material:</label>
-            <select id="materialTipo">
-                <option value="herramientas">Herramientas</option>
-                <option value="precintos">Precintos</option>
-                <option value="cinta">Cinta</option>
-                <option value="otros">Otros</option>
-            </select>
-
-            <input type="submit" id="enviarMateriales" value="Enviar Pedido de Materiales">
-        </div>
-    </div>
-
-    <script src="scripts.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
